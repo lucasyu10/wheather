@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 1600px;
+            margin: 0 auto;
+            padding: 0px 50px;
+            display: flex;
+            /* justify-content: center; */
+            flex-wrap: wrap;
+            gap: 20px;
+
+        }
+
+        .card {
+            width: 250px;
+            height: 300px;
+            background-color: gray;
+            text-align: center;
+        }
+        img{
+            width: 200px;
+            height: 100px;
+            /* margin-left: 20px; */
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+    </div>
+    <script>
+        let container = document.querySelector('.container');
+        let card = document.querySelector('.card');
+        fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-64010B7E-15C2-4A5B-ABBE-BB9CE6A1DD86').then((response) => {
+            return response.json();
+        }).then((datas) => {
+            console.log(datas);
+            datas.records.location.forEach(function (data) {
+                container.innerHTML += '';
+                // 地名
+                let dataLen = data.locationName;
+                // 溫度
+                let dataM = data.weatherElement[4].time[0].parameter.parameterName;
+                // 溫度
+                let dataT =data.weatherElement[2].time[0].parameter.parameterName;
+                // 體感
+                let dataC= data.weatherElement[3].time[0].parameter.parameterName;
+                // 天氣概況
+                let dataI =data.weatherElement[0].time[0].parameter.parameterName;
+                let img;
+                // let dataM =data.weatherElement[4].time[3].parameter.parameterName;
+                if(dataI.includes('雷')){
+                    img='./img/雷.jpg'
+                }else if(dataI.includes('晴')&& dataI.includes('雲')){
+                    img='./img/晴時多雲.png'
+                }else if (dataI.includes('雲')){
+                    img='./img/cloudy.jpg'
+                }else if (dataI.includes('晴')){
+                    img='./img/sunny.jpg'
+                }
+               
+
+                container.innerHTML += `
+                <div class="card">
+                    <img src="${img}" alt="">
+                    <h1>${dataLen}</h1>
+                    <p>溫度範圍:${dataT}~${dataM}</p>
+                    <p>體感:${dataC}</p>
+                    <p>天氣概況:${dataI}</p>
+
+                </div>`
+
+            });
+
+
+        })
+    </script>
+</body>
+
+</html>
